@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --ink: #10161F;
+    --panel: #182230;
+    --edge: #2C3A4C;
+    --sand: #F2D398;
+    --sand-dim: #C9B48A;
+    --muted: #8FA3B8;
+    --live: #6FCF8B;
+    --off: #E2574C;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    width: 430px;
+    margin: 0;
+    padding: 22px 26px 18px;
+    background: var(--ink);
+    color: var(--sand);
+    font-family: "Roboto", "Segoe UI", system-ui, sans-serif;
+    font-size: 23px;
+    line-height: 1.4;
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--panel);
+    border: 1px solid var(--edge);
+    border-radius: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .status:focus-visible { outline: 3px solid var(--sand); outline-offset: 3px; }
+
+  .dot {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--off);
+  }
+  body.on .dot { background: var(--live); box-shadow: 0 0 12px rgba(111,207,139,.65); }
+
+  .status-text { font-size: 26px; font-weight: 600; }
+  .status-hint { margin-left: auto; font-size: 18px; color: var(--muted); }
+
+  body:not(.on) .settings { opacity: .55; }
+
+  h2 {
+    margin: 22px 0 8px;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: .02em;
+  }
+
+  .seg { display: flex; gap: 8px; }
+  .seg button {
+    flex: 1;
+    padding: 11px 6px;
+    font: inherit;
+    font-size: 20px;
+    color: var(--sand-dim);
+    background: var(--panel);
+    border: 1px solid var(--edge);
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] {
+    color: var(--ink);
+    background: var(--sand);
+    border-color: var(--sand);
+    font-weight: 600;
+  }
+  .seg button:focus-visible { outline: 3px solid var(--sand); outline-offset: 2px; }
+
+  label.row {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 9px 0;
+    cursor: pointer;
+  }
+  label.row input { width: 22px; height: 22px; margin: 5px 0 0; accent-color: var(--sand); flex: 0 0 auto; }
+  .sub { display: block; font-size: 17px; color: var(--muted); }
+
+  .limit { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 9px 0; }
+  select {
+    font: inherit;
+    font-size: 21px;
+    padding: 6px 12px;
+    color: var(--sand);
+    background: var(--panel);
+    border: 1px solid var(--edge);
+    border-radius: 9px;
+  }
+
+  footer {
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid var(--edge);
+    font-size: 18px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+  <div class="status" id="toggle" role="switch" aria-checked="false" tabindex="0">
+    <span class="dot"></span>
+    <span class="status-text" id="statusText">Paused</span>
+    <span class="status-hint">click to change</span>
+  </div>
+
+  <div class="settings">
+    <h2>After a reload, go full screen as</h2>
+    <div class="seg" id="fsMode">
+      <button type="button" data-mode="off">Don't</button>
+      <button type="button" data-mode="player">Player</button>
+      <button type="button" data-mode="window">Window</button>
+    </div>
+
+    <h2>When playback is blocked</h2>
+
+    <label class="row">
+      <input type="checkbox" data-key="resumePosition">
+      <span>Resume where it cut out<span class="sub">Jumps back to a couple of seconds before the block hit.</span></span>
+    </label>
+
+    <label class="row">
+      <input type="checkbox" data-key="stallDetect">
+      <span>Also catch frozen playback<span class="sub">Reloads when the video sits still for 10 seconds with no message on screen.</span></span>
+    </label>
+
+    <div class="limit">
+      <span>Reload limit per video</span>
+      <select id="maxRetries">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+    </div>
+  </div>
+
+  <footer id="blockCount">No blocks cleared yet</footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
